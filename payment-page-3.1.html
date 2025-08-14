@@ -116,13 +116,6 @@
             100% { left: 100%; }
         }
 
-        .countdown-ring {
-            background: conic-gradient(#de1422 0deg, #de1422 360deg);
-            border-radius: 50%;
-            padding: 2px;
-            animation: spin 43s linear;
-        }
-
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -161,15 +154,9 @@
           </span>
             </div>
 
-            <!-- Countdown with animated ring -->
             <div class="flex items-center justify-center gap-2">
-                <div class="countdown-ring w-6 h-6">
-                    <div class="w-full h-full bg-white rounded-full flex items-center justify-center">
-                        <div class="w-2 h-2 bg-red rounded-full animate-pulse-soft"></div>
-                    </div>
-                </div>
                 <span class="text-sm text-red font-semibold">
-            Payment expires in <span class="font-bold text-lg">0:43</span>
+            Payment expires in <span class="font-bold text-lg">1:00</span>
           </span>
             </div>
         </div>
@@ -854,4 +841,5 @@
         </div>
         <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/UOB_Logo.svg/2560px-UOB_Logo.svg.png" alt="UOB" class="payment-logo">
+
             <span class="font-semibold">
