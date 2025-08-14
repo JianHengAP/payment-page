@@ -1,0 +1,438 @@
+<!--v1-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hosted Payment Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .payment-section img {
+            width: 64px;       /* Tailwind w-16 */
+            height: 48px;      /* Tailwind h-12 */
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .payment-section button {
+            min-height: 50px;
+        }
+
+    </style>
+</head>
+<body class="bg-red-600 font-sans">
+<div class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-lg max-w-4xl w-full overflow-hidden">
+
+        <!-- Header -->
+        <div class="bg-gray-200 p-6 text-center border-b">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzCMhtDUL6hrvCkAz26tPARG881i00Kx9JPw&s" alt="Logo" class="mx-auto mb-3 w-20 h-20 object-contain">
+            <h1 class="text-xl font-semibold">Sushi Tei</h1>
+            <p class="text-sm flex justify-center items-center gap-1">
+                <span>📍 Tebrau, Kedah, Malaysia</span> • <span>📞 +081234567890</span>
+            </p>
+            <p class="text-large text-red-500 mt-1">
+                Transaction time remaining: <span id="countdown" class="font-bold">0:60</span>
+            </p>
+        </div>
+
+        <!-- Order Details -->
+        <div class="p-6 border-b">
+            <h2 class="text-xl font-semibold mb-4">Order Details</h2>
+            <div class="grid grid-cols-2 gap-y-3 text-lg text-auto">
+
+                <!-- Left Column -->
+                <div>
+                    <span class="font-medium">Order ID:</span>
+                    <span class="text-gray-900">71374483</span>
+                </div>
+                <div>
+                    <span class="font-medium">Transaction ID:</span>
+                    <span class="text-gray-900">202508087854598</span>
+                </div>
+
+                <div>
+                    <span class="font-medium">Description:</span>
+                    <span class="text-gray-900">Sushi</span>
+                </div>
+                <div>
+                    <span class="font-medium">Total Amount:</span>
+                    <span class="text-green-600">RM100.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Section -->
+        <div class="p-6">
+            <h2 class="font-semibold mb-4">Pay With</h2>
+
+            <!-- Payment Method Tabs -->
+            <div id="paymentTabs" class="flex flex-wrap gap-3 mb-6">
+                <button data-method="card" class="tab-btn px-4 py-2 border rounded-lg bg-red-50 text-red-600 font-medium border-red-500 border-2">
+                    Credit / Debit Card
+                </button>
+                <button data-method="card-list" class="tab-btn px-4 py-2 border rounded-lg hover:bg-gray-50">
+                    Credit / Debit Card (Bank Select)
+                </button>
+                <button data-method="online-ind" class="tab-btn px-4 py-2 border rounded-lg hover:bg-gray-50">
+                    Online Banking (Individual)
+                </button>
+                <button data-method="online-comp" class="tab-btn px-4 py-2 border rounded-lg hover:bg-gray-50">
+                    Online Banking (Company)
+                </button>
+                <button data-method="ewallet" class="tab-btn px-4 py-2 border rounded-lg hover:bg-gray-50">
+                    E-Wallet
+                </button>
+                <button data-method="duitnow" class="tab-btn px-4 py-2 border rounded-lg hover:bg-gray-50">
+                    DuitNow QR
+                </button>
+                <button data-method="paylater" class="tab-btn px-4 py-2 border rounded-lg hover:bg-gray-50">
+                    PayLater
+                </button>
+                <button data-method="unionpay" class="tab-btn px-4 py-2 border rounded-lg hover:bg-gray-50">
+                    UnionPay
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div id="paymentContent">
+                <!-- Card Form (default visible) -->
+                <div data-content="card" class="payment-section space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium">Name on Card</label>
+                        <label><input type="text" class="mt-1 w-full border rounded-lg p-2" placeholder="John Doe"></label>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">Card Number</label>
+                        <label><input type="text" id="cardNumber" class="mt-1 w-full border rounded-lg p-2" placeholder="0000-0000-0000-0000"></label>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium">Expiry Date</label>
+                            <label><input type="text" id="expiry" class="mt-1 w-full border rounded-lg p-2" placeholder="MM/YY"></label>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium">CVV</label>
+                            <label><input type="text" id="cvvNumber" class="mt-1 w-full border rounded-lg p-2" placeholder="***"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card List Selection -->
+                <div data-content="card-list" class="payment-section hidden">
+                    <h3 class="font-semibold mb-3">Select Your Card Issuer</h3>
+                    <div class="max-w-md grid grid-cols-3 gap-3">
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://mvm.org.my/wp-content/uploads/2022/02/logo-visa-mastercard-1.png" alt="Visa Mastercard">
+                            <span class="text-sm">Visa Mastercard</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Online Banking (Individual) -->
+                <div data-content="online-ind" class="payment-section hidden">
+                    <h3 class="font-semibold mb-3">Select Your Bank</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/AFFIN_BANK_Logo_Full_Colour.png" alt="Affin Bank">
+                            <span class="text-sm">Affin Bank</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/Maybank-Logo.png" alt="Maybank">
+                            <span class="text-sm">Maybank</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/CIMB-Logo.jpg" alt="CIMB">
+                            <span class="text-sm">CIMB</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Online Banking (Company) -->
+                <div data-content="online-comp" class="payment-section hidden">
+                    <h3 class="font-semibold mb-3">Select Your Bank</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3yOtbkTYr1BU8Jqi1l3SrL-33WBSUED-5bw&s" alt="AmBank">
+                            <span class="text-sm">AmBank</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://images.seeklogo.com/logo-png/1/2/bank-islam-new-logo-png_seeklogo-16284.png" alt="Bank Islam">
+                            <span class="text-sm">Bank Islam</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/CIMB-Logo.jpg" alt="CIMB">
+                            <span class="text-sm">CIMB</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://logos-world.net/wp-content/uploads/2022/03/Citibank-Logo.png" alt="Citibank">
+                            <span class="text-sm">Citibank Corporate Banking</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Deutsche_Bank_logo.svg/2560px-Deutsche_Bank_logo.svg.png" alt="Deutsche Bank">
+                            <span class="text-sm">Deutsche Bank</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://cdn.loanstreet.com.my/banks/logos/000/000/031/original/hong-leong-bank-trans.png?1607322067" alt="Hong Leong Bank">
+                            <span class="text-sm">Hong Leong Bank</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://logos-world.net/wp-content/uploads/2021/02/HSBC-Logo.png" alt="HSBC Bank">
+                            <span class="text-sm">HSBC Bank</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bank_Rakyat_BM.png/330px-Bank_Rakyat_BM.png" alt="ibiz-RAKYAT">
+                            <span class="text-sm">ibiz-RAKYAT</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://cdn.freebiesupply.com/logos/large/2x/maybank-logo-png-transparent.png" alt="Maybank2E">
+                            <span class="text-sm">Maybank2E</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Logo-ocbc.svg/2560px-Logo-ocbc.svg.png" alt="OCBC Bank">
+                            <span class="text-sm">OCBC Bank</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/RHB_Logo.svg/1200px-RHB_Logo.svg.png" alt="RHB Bank">
+                            <span class="text-sm">RHB Bank</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- E-Wallet Section -->
+                <div data-content="ewallet" class="payment-section hidden">
+                    <h3 class="font-semibold mb-3">Select Your E-Wallet</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://bloguna.com/wp-content/uploads/2025/06/Logo-ShopeePay-PNG-CDR-SVG-EPS-Kualitas-HD-768x430.png" alt="ShopeePay" class="mb-2">
+                            <span class="text-sm">ShopeePay</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://assets.grab.com/wp-content/uploads/sites/8/2021/11/26235244/GrabPay_Final_Logo_RGB_green_horizontal-01.png" alt="GrabPay" class="mb-2">
+                            <span class="text-sm">GrabPay</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://vectorise.net/logo/wp-content/uploads/2019/11/Logo-Boost-e-Wallet.png" alt="Boost" class="mb-2">
+                            <span class="text-sm">Boost</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Touch_%27n_Go_eWallet_logo.svg/2024px-Touch_%27n_Go_eWallet_logo.svg.png" alt="Touch 'n Go" class="mb-2">
+                            <span class="text-sm">Touch 'n Go</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://wanna.com.my/wp-content/uploads/2024/09/Logo_1_-_Color.png" alt="WannaPay" class="mb-2">
+                            <span class="text-sm">WannaPay</span>
+                        </button>
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://wavpay.net/live/wp-content/uploads/2023/08/cropped-cropped-Wavpay-new-Logo-9.8.2023-01.png" alt="WavPay" class="mb-2">
+                            <span class="text-sm">WavPay</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DuitNowQR -->
+                <div data-content="duitnow" class="payment-section hidden">
+                    <h3 class="font-semibold mb-3">Scan to Pay with DuitNow QR</h3>
+                    <div class="max-w-md grid grid-cols-3 gap-3">
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/DuitNow_QR_Logo.png" alt="DuitNowQR" class="mb-2">
+                            <span class="text-sm">DuitNowQR</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PayLater -->
+                <div data-content="paylater" class="payment-section hidden">
+                    <h3 class="font-semibold mb-3">Select Your PayLater Provider</h3>
+                    <div class="max-w-md grid grid-cols-3 gap-3">
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://secure.riipay.my/images/logos/new/logo-purple-light.png" alt="RiiPay" class="mb-2">
+                            <span class="text-sm">RiiPay</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- UnionPay -->
+                <div data-content="unionpay" class="payment-section hidden">
+                    <h3 class="font-semibold mb-3">Select Your Card Issuer</h3>
+                    <div class="max-w-md grid grid-cols-3 gap-3">
+                        <button class="w-[140px] border rounded-lg p-2 flex flex-col items-center hover:bg-gray-50">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/UnionPay_logo.svg/2560px-UnionPay_logo.svg.png" alt="UnionPay" class="mb-2">
+                            <span class="text-sm">UnionPay</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Shared Authorisation + Buttons -->
+                <div class="mt-6 space-y-4">
+                    <div class="flex items-start gap-2">
+                        <input id="authorise" type="checkbox" class="mt-1">
+                        <label for="authorise" class="text-sm text-gray-600">
+                            I authorise <span class="font-semibold">Axaipay</span> to charge the above amount and agree to
+                            <a href="#" class="text-blue-600 underline">Privacy Statement</a>.
+                        </label>
+                    </div>
+                    <div class="flex gap-3 pt-2">
+                        <button id="payBtn" class="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 disabled:opacity-50" disabled>
+                            Pay RM 100.00
+                        </button>
+                        <button class="flex-1 border border-gray-300 py-2 rounded-lg hover:bg-gray-50">
+                            Cancel & Go Back
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-sm text-black/80 mt-4">
+                <p class="flex items-center justify-center gap-2">
+                    <span></span>
+                    © Secured payment processed by:
+                    <img src="https://static.wixstatic.com/media/a9eab7_a863f7d76ac44938be8c5bffc1f7f10a~mv2.png/v1/fit/w_2500,h_1330,al_c/a9eab7_a863f7d76ac44938be8c5bffc1f7f10a~mv2.png"
+                         class="w-24 h-auto inline-block align-middle"/>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Payment tab functionality
+    // const tabs = document.querySelectorAll('.tab-btn');
+    // const sections = document.querySelectorAll('.payment-section');
+    //
+    // tabs.forEach(tab => {
+    //   tab.addEventListener('click', () => {
+    //     tabs.forEach(t => t.classList.remove('bg-red-50', 'text-red-600', 'font-medium'));
+    //     tab.classList.add('bg-red-50', 'text-red-600', 'font-medium');
+    //
+    //     const method = tab.getAttribute('data-method');
+    //     sections.forEach(section => {
+    //       if (section.getAttribute('data-content') === method) {
+    //         section.classList.remove('hidden');
+    //       } else {
+    //         section.classList.add('hidden');
+    //       }
+    //     });
+    //   });
+    // });
+
+
+
+    // --- 1. Payment method tab switching ---
+    const methodButtons = document.querySelectorAll('.tab-btn');
+    const sections = document.querySelectorAll('.payment-section');
+
+    methodButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // highlight selected method tab
+            methodButtons.forEach(btn => btn.classList.remove('bg-red-50', 'text-red-600', 'font-medium', 'border-red-500', 'border-2'));
+            button.classList.add('bg-red-50', 'text-red-600', 'font-medium', 'border-red-500', 'border-2');
+
+            // show the matching section
+            const method = button.getAttribute('data-method');
+            sections.forEach(section => {
+                section.classList.toggle('hidden', section.getAttribute('data-content') !== method);
+            });
+        });
+    });
+
+    // --- 2. Payment option selection (one active at a time globally) ---
+    const optionButtons = document.querySelectorAll('.payment-section button');
+
+    optionButtons.forEach(option => {
+        option.addEventListener('click', () => {
+            // Remove highlight from ALL payment option buttons
+            optionButtons.forEach(btn => btn.classList.remove('ring-2', 'ring-red-500', 'bg-red-50', 'text-red-600', 'font-semibold'));
+
+            // Add highlight to the clicked one
+            option.classList.add('ring-2', 'ring-red-500', 'bg-red-50', 'text-red-600', 'font-semibold');
+
+            // Optional: store the selected option globally
+            const selectedName = option.querySelector('span')?.textContent || 'Unknown';
+            console.log(`Selected payment option: ${selectedName}`);
+        });
+    });
+
+
+
+    // Checkbox functionality
+    const checkbox = document.getElementById('authorise');
+    const payBtn = document.getElementById('payBtn');
+    if (checkbox && payBtn) {
+        checkbox.addEventListener('change', () => {
+            payBtn.disabled = !checkbox.checked;
+        });
+    }
+
+
+    //input checkers
+    const expiryInput = document.getElementById('expiry');
+    expiryInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, ''); // remove non-digits
+
+        if (value.length > 2) {
+            value = value.slice(0, 2) + '/' + value.slice(2, 4);
+        }
+
+        e.target.value = value;
+    });
+
+    const cardNumberInput = document.getElementById('cardNumber');
+    cardNumberInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, ''); // remove non-digits
+        e.target.value = value;
+    });
+
+    const cvvNumberInput = document.getElementById('cvvNumber');
+    cvvNumberInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, ''); // remove non-digits
+        e.target.value = value;
+    });
+
+
+
+    //countdown timer
+    let timeLeft = 60;
+    const countdownElement = document.getElementById('countdown');
+    const timeoutModal = document.getElementById('timeoutModal');
+
+    function updateTimer() {
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            countdownElement.textContent = '0:00';
+            countdownElement.parentElement.classList.add('animate-pulse');
+
+            //show timeout modal
+            timeoutModal.classList.remove('hidden');
+
+            //disable all form inputs and buttons
+            const inputs = document.querySelectorAll('input, button');
+            inputs.forEach(input => {
+                if (input.id !== 'timeoutModal') {
+                    input.disabled = true;
+                }
+            });
+
+            return;
+        }
+
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        //add visual warning when time is running low
+        if (timeLeft <= 10) {
+            //countdownElement.parentElement.classList.add('animate-pulse');
+            countdownElement.classList.add('text-red-600');
+        }
+        timeLeft--;
+    }
+
+    //update timer immediately and then every second
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
+</script>
+
+</body>
+</html>

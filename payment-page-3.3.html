@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Sushi Tei</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'red': '#de1422',
+                        'light': '#fef2f3'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #de1422 0%, #de1422 100%);
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .payment-logo {
+            width: 40px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .secure-logo {
+            width: 80px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .glassmorphism {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .animate-pulse-soft {
+            animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .floating-card {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .countdown-ring {
+            background: conic-gradient(#de1422 0deg, #de1422 360deg);
+            border-radius: 50%;
+            padding: 2px;
+            animation: spin 43s linear;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .dropdown-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+        }
+
+        .dropdown-select:focus {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23de1422' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        }
+
+        .payment-option-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .payment-option-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-option-card.selected {
+            border-color: #de1422;
+            background: linear-gradient(135deg, #fef2f3, #ffffff);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(222, 20, 34, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<div class="container mx-auto px-4 py-6 max-w-2xl">
+
+    <!-- Header with floating card effect -->
+    <div class="glassmorphism rounded-3xl p-6 mb-6 floating-card">
+        <div class="text-center">
+            <!-- Logo with shimmer effect -->
+            <div class="w-20 h-20 mx-auto mb-4 rounded-2xl overflow-hidden shimmer bg-gradient-to-br from-red-600 to-red-700 p-1">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzCMhtDUL6hrvCkAz26tPARG881i00Kx9JPw&s"
+                     alt="Sushi Tei" class="w-full h-full object-cover rounded-xl">
+            </div>
+
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Sushi Tei</h1>
+            <div class="flex items-center justify-center gap-4 text-sm text-gray-600 mb-4">
+          <span class="flex items-center gap-1">
+            <span class="text-red">📍</span>
+            Tebrau, Kedah
+          </span>
+                <span class="flex items-center gap-1">
+            <span class="text-red">📞</span>
+            +081234567890
+          </span>
+            </div>
+
+            <!-- Countdown with animated ring -->
+            <div class="flex items-center justify-center gap-2">
+                <div class="countdown-ring w-6 h-6">
+                    <div class="w-full h-full bg-white rounded-full flex items-center justify-center">
+                        <div class="w-2 h-2 bg-red rounded-full animate-pulse-soft"></div>
+                    </div>
+                </div>
+                <span class="text-sm text-red font-semibold">
+            Payment expires in <span class="font-bold text-lg">0:43</span>
+          </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Summary Card -->
+    <div class="glassmorphism rounded-3xl p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span class="w-2 h-2 bg-red rounded-full"></span>
+            Order Summary
+        </h2>
+
+        <div class="space-y-3">
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                <span class="text-gray-600">Order ID</span>
+                <span class="font-semibold text-gray-800">#71374483</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                <span class="text-gray-600">Transaction</span>
+                <span class="font-semibold text-gray-800">#202508087854598</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                <span class="text-gray-600">Item</span>
+                <span class="font-semibold text-gray-800">Sushi Set</span>
+            </div>
+            <div class="flex justify-between items-center py-3 bg-gradient-to-r from-light to-orange-50 rounded-2xl px-4 mt-4">
+                <span class="text-lg font-semibold text-gray-800">Total Amount</span>
+                <span class="text-2xl font-bold text-red">RM100.00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="glassmorphism rounded-3xl p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <span class="w-2 h-2 bg-red rounded-full"></span>
+            Choose Payment Method
+        </h2>
+
+        <div class="space-y-6">
+            <!-- Main Payment Method Dropdown -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Payment Method</label>
+                <label for="paymentMethod"></label><select id="paymentMethod" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-red focus:outline-none transition-all dropdown-select bg-white">
+                <option value="">Select Payment Method</option>
+                <option value="card">💳 Credit / Debit Card</option>
+                <option value="card-bank-select">💳 Credit / Debit Card (Bank Select)</option>
+                <option value="online-banking-individual">🏦 Online Banking (Individual)</option>
+                <option value="online-banking-company">🏦 Online Banking (Company)</option>
+                <option value="ewallet">📱 E-Wallet</option>
+                <option value="duitnow">📱 DuitNowQR</option>
+                <option value="paylater">📱 PayLater</option>
+                <option value="unionpay">📱 UnionPay</option>
+            </select>
+            </div>
+
+            <!-- Credit/Debit Card Form -->
+            <div id="card-section" class="payment-section hidden">
+                <div class="bg-gray-50 rounded-2xl p-4 space-y-4">
+                    <h3 class="font-semibold text-gray-800 mb-4">Card Details</h3>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Card Holder Name</label>
+                        <input type="text" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-red focus:outline-none transition-all" placeholder="John Doe">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Card Number</label>
+                        <input type="text" id="cardNumber" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-red focus:outline-none transition-all" placeholder="1234 5678 9012 3456">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Expiry</label>
+                            <input type="text" id="expiry" maxlength="5" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-red focus:outline-none transition-all" placeholder="MM/YY">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">CVV</label>
+                            <input type="text" id="cvvNumber" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-red focus:outline-none transition-all" placeholder="123">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Bank Select Dropdown -->
+            <div id="card-bank-select-section" class="payment-section hidden">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Select Card Provider</label>
+                    <div class="space-y-2">
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="visa-mastercard">
+                            <img src="https://habra.com.my/wp-content/uploads/2016/06/logo-visa-mastercard.png.webp" alt="Visa/Mastercard" class="payment-logo">
+                            <span class="font-semibold flex-1">Visa / Mastercard</span>
+                            <input type="radio" name="payment-option" value="visa-mastercard" class="text-red focus:ring-red">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Online Banking Individual-->
+            <div id="online-banking-individual-section" class="payment-section hidden">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Select Bank</label>
+                    <div class="space-y-2">
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="maybank-individual">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/Maybank-Logo.png" alt="Maybank" class="payment-logo">
+                            <span class="font-semibold flex-1">Maybank</span>
+                            <input type="radio" name="payment-option" value="maybank-individual" class="text-red focus:ring-red">
+                        </div>
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="cimb-individual">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/CIMB-Logo.jpg" alt="CIMB" class="payment-logo">
+                            <span class="font-semibold flex-1">CIMB Bank</span>
+                            <input type="radio" name="payment-option" value="cimb-individual" class="text-red focus:ring-red">
+                        </div>
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="rhb-individual">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/RHB_Logo.svg/1200px-RHB_Logo.svg.png" alt="RHB Bank" class="payment-logo">
+                            <span class="font-semibold flex-1">RHB Bank</span>
+                            <input type="radio" name="payment-option" value="rhb-individual" class="text-red focus:ring-red">
+                        </div>
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="public-bank-individual">
+                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/86/Public_Bank_Berhad_company_logo.svg/1200px-Public_Bank_Berhad_company_logo.svg.png" alt="Public Bank" class="payment-logo">
+                            <span class="font-semibold flex-1">Public Bank</span>
+                            <input type="radio" name="payment-option" value="public-bank-individual" class="text-red focus:ring-red">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Online Banking Company -->
+            <div id="online-banking-company-section" class="payment-section hidden">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Select Bank</label>
+                    <div class="space-y-2">
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="maybank-company">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/Maybank-Logo.png" alt="Maybank" class="payment-logo">
+                            <span class="font-semibold flex-1">Maybank</span>
+                            <input type="radio" name="payment-option" value="maybank-company" class="text-red focus:ring-red">
+                        </div>
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="cimb-company">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/CIMB-Logo.jpg" alt="CIMB" class="payment-logo">
+                            <span class="font-semibold flex-1">CIMB Bank</span>
+                            <input type="radio" name="payment-option" value="cimb-company" class="text-red focus:ring-red">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- E-Wallet -->
+            <div id="ewallet-section" class="payment-section hidden">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Select E-Wallet</label>
+                    <div class="space-y-2">
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="shopeepay">
+                            <img src="https://bloguna.com/wp-content/uploads/2025/06/Logo-ShopeePay-PNG-CDR-SVG-EPS-Kualitas-HD-768x430.png" alt="ShopeePay" class="payment-logo">
+                            <span class="font-semibold flex-1">ShopeePay</span>
+                            <input type="radio" name="payment-option" value="shopeepay" class="text-red focus:ring-red">
+                        </div>
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="grabpay">
+                            <img src="https://assets.grab.com/wp-content/uploads/sites/8/2021/11/26235244/GrabPay_Final_Logo_RGB_green_horizontal-01.png" alt="GrabPay" class="payment-logo">
+                            <span class="font-semibold flex-1">GrabPay</span>
+                            <input type="radio" name="payment-option" value="grabpay" class="text-red focus:ring-red">
+                        </div>
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="boost">
+                            <img src="https://vectorise.net/logo/wp-content/uploads/2019/11/Logo-Boost-e-Wallet.png" alt="Boost" class="payment-logo">
+                            <span class="font-semibold flex-1">Boost</span>
+                            <input type="radio" name="payment-option" value="boost" class="text-red focus:ring-red">
+                        </div>
+                        <div class="payment-option-card p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="touch-n-go">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Touch_%27n_Go_eWallet_logo.svg/2024px-Touch_%27n_Go_eWallet_logo.svg.png" alt="Touch 'n Go" class="payment-logo">
+                            <span class="font-semibold flex-1">Touch 'n Go</span>
+                            <input type="radio" name="payment-option" value="touch-n-go" class="text-red focus:ring-red">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DuitNowQR Section -->
+            <div id="duitnow-section" class="payment-section hidden">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">DuitNowQR Payment</label>
+                    <div class="payment-option-card p-4 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="duitnow">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/DuitNow_QR_Logo.png" alt="DuitNow" class="payment-logo">
+                        <div class="flex-1">
+                            <div class="font-semibold">DuitNowQR</div>
+                            <div class="text-sm text-gray-600">Scan QR code to pay</div>
+                        </div>
+                        <input type="radio" name="payment-option" value="duitnow" class="text-red focus:ring-red">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PayLater Section -->
+            <div id="paylater-section" class="payment-section hidden">
+                <div class="payment-option-card bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200 cursor-pointer" data-value="paylater">
+                    <div class="text-center">
+                        <div class="text-4xl mb-3">💳</div>
+                        <h3 class="font-semibold text-gray-800 mb-2">PayLater Payment</h3>
+                        <p class="text-sm text-gray-600">Pay later with flexible payment options</p>
+                        <input type="radio" name="payment-option" value="paylater" class="hidden">
+                    </div>
+                </div>
+            </div>
+
+            <!-- UnionPay Section -->
+            <div id="unionpay-section" class="payment-section hidden">
+                <div class="payment-option-card bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 cursor-pointer" data-value="unionpay">
+                    <div class="text-center">
+                        <div class="text-4xl mb-3">🌐</div>
+                        <h3 class="font-semibold text-gray-800 mb-2">UnionPay Payment</h3>
+                        <p class="text-sm text-gray-600">Pay with your UnionPay card</p>
+                        <input type="radio" name="payment-option" value="unionpay" class="hidden">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms & Payment Button -->
+    <div class="glassmorphism rounded-3xl p-6 mb-6">
+        <div class="space-y-6">
+            <div class="flex items-start gap-3">
+                <input id="terms" type="checkbox" class="mt-1 w-4 h-4 text-red border-gray-300 rounded focus:ring-red focus:ring-offset-0">
+                <label for="terms" class="text-sm text-gray-700 leading-relaxed">
+                    I agree to the <a href="#" class="text-red font-semibold underline hover:no-underline transition-all">Terms of Service</a>
+                    and authorize <span class="font-semibold">Axaipay</span> to process this payment.
+                </label>
+            </div>
+
+            <div class="space-y-3">
+                <button id="payButton" disabled class="w-full bg-red text-white py-4 rounded-2xl font-bold text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100">
+                    Pay RM 100.00
+                </button>
+                <button class="w-full border-2 border-gray-200 text-gray-700 py-3 rounded-2xl font-semibold transition-all hover:border-red hover:text-red hover:bg-red/5">
+                    Cancel Payment
+                </button>
+            </div>
+
+            <!-- Security Notice -->
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                <div class="text-center text-sm text-gray-700">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                    </div>
+                    <div class="flex items-center justify-center gap-2">
+                        <span class="text-xs text-gray-600">© Secured payment processed by:</span>
+                        <img src="https://static.wixstatic.com/media/a9eab7_a863f7d76ac44938be8c5bffc1f7f10a~mv2.png/v1/fit/w_2500,h_1330,al_c/a9eab7_a863f7d76ac44938be8c5bffc1f7f10a~mv2.png" alt="Axaipay" class="secure-logo">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Payment method dropdown handling
+    const paymentMethodSelect = document.getElementById('paymentMethod');
+    const paymentSections = document.querySelectorAll('.payment-section');
+
+    paymentMethodSelect.addEventListener('change', (e) => {
+        const selectedMethod = e.target.value;
+
+        // Hide all payment sections
+        paymentSections.forEach(section => {
+            section.classList.add('hidden');
+        });
+
+        // Clear all selections when changing payment method
+        clearAllSelections();
+
+        // Show selected payment section
+        if (selectedMethod) {
+            const targetSection = document.getElementById(`${selectedMethod}-section`);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+        }
+    });
+
+    // Function to clear all payment option selections
+    function clearAllSelections() {
+        // Remove selected class from all payment cards
+        const allPaymentCards = document.querySelectorAll('.payment-option-card');
+        allPaymentCards.forEach(card => {
+            card.classList.remove('selected');
+        });
+
+        // Uncheck all radio buttons
+        const allRadios = document.querySelectorAll('input[name="payment-option"]');
+        allRadios.forEach(radio => {
+            radio.checked = false;
+        });
+    }
+
+    // Global payment option selection handling
+    document.addEventListener('click', (e) => {
+        const paymentCard = e.target.closest('.payment-option-card');
+        if (paymentCard && paymentCard.hasAttribute('data-value')) {
+            // Clear all previous selections across all payment methods
+            clearAllSelections();
+
+            // Add selected class to clicked card
+            paymentCard.classList.add('selected');
+
+            // Check the radio button in this card
+            const radio = paymentCard.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+            }
+        }
+    });
+
+    // Input formatters
+    const expiryInput = document.getElementById('expiry');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+
+    const cardNumberInput = document.getElementById('cardNumber');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            e.target.value = value;
+        });
+    }
+
+    const cvvNumberInput = document.getElementById('cvvNumber');
+    if (cvvNumberInput) {
+        cvvNumberInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            e.target.value = value.slice(0, 3);
+        });
+    }
+
+    // Terms checkbox and pay button
+    const termsCheckbox = document.getElementById('terms');
+    const payButton = document.getElementById('payButton');
+
+    if (termsCheckbox && payButton) {
+        termsCheckbox.addEventListener('change', () => {
+            payButton.disabled = !termsCheckbox.checked;
+        });
+    }
+
+    // Countdown timer
+    let timeLeft = 43;
+    const countdownElement = document.querySelector('.text-red .font-bold');
+
+    if (countdownElement) {
+        const timer = setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                countdownElement.textContent = '0:00';
+                return;
+            }
+
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+</script>
+</body>
+</html>

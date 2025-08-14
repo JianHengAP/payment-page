@@ -1,0 +1,857 @@
+<!--v3.1-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Sushi Tei</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'red': '#de1422',
+                        'light': '#fef2f3'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #de1422 0%, #de1422 100%);
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .payment-logo {
+            width: 40px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .secure-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .glassmorphism {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .animate-pulse-soft {
+            animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .payment-method-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .payment-method-item:hover {
+            background: #fef2f3;
+            transform: translateX(4px);
+        }
+
+        .payment-method-item.active {
+            background: linear-gradient(135deg, #de1422, #de1422);
+            color: white;
+            transform: translateX(8px);
+        }
+
+        .payment-option-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .payment-option-item:hover {
+            background: #fef2f3;
+            transform: translateX(4px);
+        }
+
+        .payment-option-item.selected {
+            background: linear-gradient(135deg, #de1422, #de1422);
+            color: white;
+        }
+
+        .payment-option-item.selected span {
+            color: white;
+        }
+
+        .floating-card {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .countdown-ring {
+            background: conic-gradient(#de1422 0deg, #de1422 360deg);
+            border-radius: 50%;
+            padding: 2px;
+            animation: spin 43s linear;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .payment-method-item.active .chevron-icon {
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<div class="container mx-auto px-4 py-6 max-w-2xl">
+
+    <!-- Header with floating card effect -->
+    <div class="glassmorphism rounded-3xl p-6 mb-6 floating-card">
+        <div class="text-center">
+            <!-- Logo with shimmer effect -->
+            <div class="w-20 h-20 mx-auto mb-4 rounded-2xl overflow-hidden shimmer bg-gradient-to-br from-red-600 to-red-700 p-1">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzCMhtDUL6hrvCkAz26tPARG881i00Kx9JPw&s"
+                     alt="Sushi Tei" class="w-full h-full object-cover rounded-xl">
+            </div>
+
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Sushi Tei</h1>
+            <div class="flex items-center justify-center gap-4 text-sm text-gray-600 mb-4">
+          <span class="flex items-center gap-1">
+            <span class="text-red">📍</span>
+            Tebrau, Kedah
+          </span>
+                <span class="flex items-center gap-1">
+            <span class="text-red">📞</span>
+            +081234567890
+          </span>
+            </div>
+
+            <!-- Countdown with animated ring -->
+            <div class="flex items-center justify-center gap-2">
+                <div class="countdown-ring w-6 h-6">
+                    <div class="w-full h-full bg-white rounded-full flex items-center justify-center">
+                        <div class="w-2 h-2 bg-red rounded-full animate-pulse-soft"></div>
+                    </div>
+                </div>
+                <span class="text-sm text-red font-semibold">
+            Payment expires in <span class="font-bold text-lg">0:43</span>
+          </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Summary Card -->
+    <div class="glassmorphism rounded-3xl p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span class="w-2 h-2 bg-red rounded-full"></span>
+            Order Summary
+        </h2>
+
+        <div class="space-y-3">
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                <span class="text-gray-600">Order ID</span>
+                <span class="font-semibold text-gray-800">#71374483</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                <span class="text-gray-600">Transaction</span>
+                <span class="font-semibold text-gray-800">#202508087854598</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                <span class="text-gray-600">Item</span>
+                <span class="font-semibold text-gray-800">Sushi Set</span>
+            </div>
+            <div class="flex justify-between items-center py-3 bg-gradient-to-r from-light to-orange-50 rounded-2xl px-4 mt-4">
+                <span class="text-lg font-semibold text-gray-800">Total Amount</span>
+                <span class="text-2xl font-bold text-red">RM100.00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="glassmorphism rounded-3xl p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <span class="w-2 h-2 bg-red rounded-full"></span>
+            Choose Payment Method
+        </h2>
+
+        <!-- Payment Methods List with Inline Options -->
+        <div class="space-y-2 mb-6">
+            <!-- Credit/Debit Card -->
+            <div class="payment-method-group">
+                <div data-method="card" class="payment-method-item active p-4 rounded-2xl border border-gray-100 bg-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">💳</span>
+                        <span class="font-semibold">Credit / Debit Card</span>
+                    </div>
+                    <span class="chevron-icon text-gray-400">›</span>
+                </div>
+                <!-- Card Form -->
+                <div data-content="card" class="payment-section p-4 bg-gray-50 rounded-b-2xl">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Card Holder Name</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-red focus:outline-none transition-all" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Card Number</label>
+                            <input type="text" id="cardNumber" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-red focus:outline-none transition-all" placeholder="1234 5678 9012 3456">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Expiry</label>
+                                <input type="text" id="expiry" maxlength="5" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-red focus:outline-none transition-all" placeholder="MM/YY">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">CVV</label>
+                                <input type="text" id="cvvNumber" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-red focus:outline-none transition-all" placeholder="123">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Credit/Debit Card (Bank Select) -->
+            <div class="payment-method-group">
+                <div data-method="card-bank-select" class="payment-method-item p-4 rounded-2xl border border-gray-100 bg-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">💳</span>
+                        <span class="font-semibold">Credit / Debit Card (Bank Select)</span>
+                    </div>
+                    <span class="chevron-icon text-gray-400">›</span>
+                </div>
+                <!-- Card Bank Select Options -->
+                <div data-content="card-bank-select" class="payment-section hidden p-4 bg-gray-50 rounded-b-2xl">
+                    <div class="space-y-2">
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://habra.com.my/wp-content/uploads/2016/06/logo-visa-mastercard.png.webp" alt="VisaMastercard" class="payment-logo">
+                            <span class="font-semibold">Visa / Mastercard</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Online Banking (Individual) -->
+            <div class="payment-method-group">
+                <div data-method="online-banking-individual" class="payment-method-item p-4 rounded-2xl border border-gray-100 bg-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🏦</span>
+                        <span class="font-semibold">Online Banking (Individual)</span>
+                    </div>
+                    <span class="chevron-icon text-gray-400">›</span>
+                </div>
+                <!-- Online Banking (Individual) Options -->
+                <div data-content="online-banking-individual" class="payment-section hidden p-4 bg-gray-50 rounded-b-2xl">
+                    <div class="space-y-2">
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/Maybank-Logo.png" alt="Maybank" class="payment-logo">
+                            <span class="font-semibold">Maybank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/CIMB-Logo.jpg" alt="CIMB" class="payment-logo">
+                            <span class="font-semibold">CIMB Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/AFFIN_BANK_Logo_Full_Colour.png" alt="Affin Bank" class="payment-logo">
+                            <span class="font-semibold">Affin Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://logos-world.net/wp-content/uploads/2021/02/HSBC-Logo.png" alt="HSBC" class="payment-logo">
+                            <span class="font-semibold">HSBC Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3yOtbkTYr1BU8Jqi1l3SrL-33WBSUED-5bw&s" alt="AmBank" class="payment-logo">
+                            <span class="font-semibold">AmBank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://images.seeklogo.com/logo-png/1/2/bank-islam-new-logo-png_seeklogo-16284.png" alt="Bank Islam" class="payment-logo">
+                            <span class="font-semibold">Bank Islam</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://logos-world.net/wp-content/uploads/2022/03/Citibank-Logo.png" alt="Citibank" class="payment-logo">
+                            <span class="font-semibold">Citibank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Deutsche_Bank_logo.svg/2560px-Deutsche_Bank_logo.svg.png" alt="Deutsche Bank" class="payment-logo">
+                            <span class="font-semibold">Deutsche Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://cdn.loanstreet.com.my/banks/logos/000/000/031/original/hong-leong-bank-trans.png?1607322067" alt="Hong Leong Bank" class="payment-logo">
+                            <span class="font-semibold">Hong Leong</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bank_Rakyat_BM.png/330px-Bank_Rakyat_BM.png" alt="Bank Rakyat" class="payment-logo">
+                            <span class="font-semibold">Bank Rakyat</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Logo-ocbc.svg/2560px-Logo-ocbc.svg.png" alt="OCBC Bank" class="payment-logo">
+                            <span class="font-semibold">OCBC Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/RHB_Logo.svg/1200px-RHB_Logo.svg.png" alt="RHB Bank" class="payment-logo">
+                            <span class="font-semibold">RHB Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Standard_Chartered_%282021%29.svg/1280px-Standard_Chartered_%282021%29.svg.png" alt="Standard Chartered" class="payment-logo">
+                            <span class="font-semibold">Standard Chartered</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/UOB_Logo.svg/2560px-UOB_Logo.svg.png" alt="UOB" class="payment-logo">
+                            <span class="font-semibold">UOB</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/BSN_Logo.svg/1200px-BSN_Logo.svg.png" alt="BSN" class="payment-logo">
+                            <span class="font-semibold">BSN</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Online Banking (Company) -->
+            <div class="payment-method-group">
+                <div data-method="online-banking-company" class="payment-method-item p-4 rounded-2xl border border-gray-100 bg-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🏦</span>
+                        <span class="font-semibold">Online Banking (Company)</span>
+                    </div>
+                    <span class="chevron-icon text-gray-400">›</span>
+                </div>
+                <!-- Online Banking (Company) Options -->
+                <div data-content="online-banking-company" class="payment-section hidden p-4 bg-gray-50 rounded-b-2xl">
+                    <div class="space-y-2">
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/Maybank-Logo.png" alt="Maybank" class="payment-logo">
+                            <span class="font-semibold">Maybank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://logos-world.net/wp-content/uploads/2023/02/CIMB-Logo.jpg" alt="CIMB" class="payment-logo">
+                            <span class="font-semibold">CIMB Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/AFFIN_BANK_Logo_Full_Colour.png" alt="Affin Bank" class="payment-logo">
+                            <span class="font-semibold">Affin Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://logos-world.net/wp-content/uploads/2021/02/HSBC-Logo.png" alt="HSBC" class="payment-logo">
+                            <span class="font-semibold">HSBC Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3yOtbkTYr1BU8Jqi1l3SrL-33WBSUED-5bw&s" alt="AmBank" class="payment-logo">
+                            <span class="font-semibold">AmBank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://images.seeklogo.com/logo-png/1/2/bank-islam-new-logo-png_seeklogo-16284.png" alt="Bank Islam" class="payment-logo">
+                            <span class="font-semibold">Bank Islam</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://logos-world.net/wp-content/uploads/2022/03/Citibank-Logo.png" alt="Citibank" class="payment-logo">
+                            <span class="font-semibold">Citibank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Deutsche_Bank_logo.svg/2560px-Deutsche_Bank_logo.svg.png" alt="Deutsche Bank" class="payment-logo">
+                            <span class="font-semibold">Deutsche Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://cdn.loanstreet.com.my/banks/logos/000/000/031/original/hong-leong-bank-trans.png?1607322067" alt="Hong Leong Bank" class="payment-logo">
+                            <span class="font-semibold">Hong Leong</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bank_Rakyat_BM.png/330px-Bank_Rakyat_BM.png" alt="Bank Rakyat" class="payment-logo">
+                            <span class="font-semibold">Bank Rakyat</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Logo-ocbc.svg/2560px-Logo-ocbc.svg.png" alt="OCBC Bank" class="payment-logo">
+                            <span class="font-semibold">OCBC Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/RHB_Logo.svg/1200px-RHB_Logo.svg.png" alt="RHB Bank" class="payment-logo">
+                            <span class="font-semibold">RHB Bank</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Standard_Chartered_%282021%29.svg/1280px-Standard_Chartered_%282021%29.svg.png" alt="Standard Chartered" class="payment-logo">
+                            <span class="font-semibold">Standard Chartered</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/UOB_Logo.svg/2560px-UOB_Logo.svg.png" alt="UOB" class="payment-logo">
+                            <span class="font-semibold">UOB</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/BSN_Logo.svg/1200px-BSN_Logo.svg.png" alt="BSN" class="payment-logo">
+                            <span class="font-semibold">BSN</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- E-Wallet -->
+            <div class="payment-method-group">
+                <div data-method="ewallet" class="payment-method-item p-4 rounded-2xl border border-gray-100 bg-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📱</span>
+                        <span class="font-semibold">E-Wallet</span>
+                    </div>
+                    <span class="chevron-icon text-gray-400">›</span>
+                </div>
+                <!-- E-Wallet Options -->
+                <div data-content="ewallet" class="payment-section hidden p-4 bg-gray-50 rounded-b-2xl">
+                    <div class="space-y-2">
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://bloguna.com/wp-content/uploads/2025/06/Logo-ShopeePay-PNG-CDR-SVG-EPS-Kualitas-HD-768x430.png" alt="ShopeePay" class="payment-logo">
+                            <span class="font-semibold">ShopeePay</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://assets.grab.com/wp-content/uploads/sites/8/2021/11/26235244/GrabPay_Final_Logo_RGB_green_horizontal-01.png" alt="GrabPay" class="payment-logo">
+                            <span class="font-semibold">GrabPay</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://vectorise.net/logo/wp-content/uploads/2019/11/Logo-Boost-e-Wallet.png" alt="Boost" class="payment-logo">
+                            <span class="font-semibold">Boost</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Touch_%27n_Go_eWallet_logo.svg/2024px-Touch_%27n_Go_eWallet_logo.svg.png" alt="Touch 'n Go" class="payment-logo">
+                            <span class="font-semibold">Touch 'n Go</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://wanna.com.my/wp-content/uploads/2024/09/Logo_1_-_Color.png" alt="WannaPay" class="payment-logo">
+                            <span class="font-semibold">WannaPay</span>
+                        </div>
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://wavpay.net/live/wp-content/uploads/2023/08/cropped-cropped-Wavpay-new-Logo-9.8.2023-01.png" alt="WavPay" class="payment-logo">
+                            <span class="font-semibold">WavPay</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DuitNowQR -->
+            <div class="payment-method-group">
+                <div data-method="duitnow" class="payment-method-item p-4 rounded-2xl border border-gray-100 bg-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📱</span>
+                        <span class="font-semibold">DuitNowQR</span>
+                    </div>
+                    <span class="chevron-icon text-gray-400">›</span>
+                </div>
+                <!-- DuitNowQR Options -->
+                <div data-content="duitnow" class="payment-section hidden p-4 bg-gray-50 rounded-b-2xl">
+                    <div class="space-y-2">
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/DuitNow_QR_Logo.png" alt="DuitNow" class="payment-logo">
+                            <span class="font-semibold">DuitNowQR</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PayLater -->
+            <div class="payment-method-group">
+                <div data-method="paylater" class="payment-method-item p-4 rounded-2xl border border-gray-100 bg-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📱</span>
+                        <span class="font-semibold">PayLater</span>
+                    </div>
+                    <span class="chevron-icon text-gray-400">›</span>
+                </div>
+                <!-- PayLater Options -->
+                <div data-content="paylater" class="payment-section hidden p-4 bg-gray-50 rounded-b-2xl">
+                    <div class="space-y-2">
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://secure.riipay.my/images/logos/new/logo-purple-light.png" alt="PayLater" class="payment-logo">
+                            <span class="font-semibold">PayLater</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UnionPay -->
+            <div class="payment-method-group">
+                <div data-method="unionpay" class="payment-method-item p-4 rounded-2xl border border-gray-100 bg-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📱</span>
+                        <span class="font-semibold">UnionPay</span>
+                    </div>
+                    <span class="chevron-icon text-gray-400">›</span>
+                </div>
+                <!-- UnionPay Options -->
+                <div data-content="unionpay" class="payment-section hidden p-4 bg-gray-50 rounded-b-2xl">
+                    <div class="space-y-2">
+                        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/UnionPay_logo.svg/2560px-UnionPay_logo.svg.png" alt="UnionPay" class="payment-logo">
+                            <span class="font-semibold">UnionPay</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Bank Select Options -->
+        <div data-content="card-bank-select" class="payment-section hidden">
+            <div class="space-y-2">
+                <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                    <img src="https://habra.com.my/wp-content/uploads/2016/06/logo-visa-mastercard.png.webp" alt="VisaMastercard" class="payment-logo">
+                    <span class="font-semibold">UOB</span>
+                </div>
+                <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/BSN_Logo.svg/1200px-BSN_Logo.svg.png" alt="BSN" class="payment-logo">
+                    <span class="font-semibold">BSN</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- DuitNowQR Options -->
+        <div data-content="duitnow" class="payment-section hidden">
+            <div class="space-y-2">
+                <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/22/DuitNow_QR_Logo.png" alt="DuitNow" class="payment-logo">
+                    <span class="font-semibold">DuitNowQR</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PayLater Options -->
+        <div data-content="paylater" class="payment-section hidden">
+            <div class="space-y-2">
+                <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                    <img src="https://secure.riipay.my/images/logos/new/logo-purple-light.png" alt="PayLater" class="payment-logo">
+                    <span class="font-semibold">PayLater</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- UnionPay Options -->
+        <div data-content="unionpay" class="payment-section hidden">
+            <div class="space-y-2">
+                <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/UnionPay_logo.svg/2560px-UnionPay_logo.svg.png" alt="UnionPay" class="payment-logo">
+                    <span class="font-semibold">UnionPay</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="glassmorphism rounded-3xl p-6 mb-7">
+        <!-- Terms & Payment Button -->
+        <div class="mt-8 space-y-4">
+            <div>
+            </div>
+            <input id="terms" type="checkbox" class="mt-1 w-4 h-4 text-red border-gray-300 rounded focus:ring-red">
+            <label for="terms" class="text-sm text-gray-700">
+                I agree to the <a href="Terms of Service" class="text-red font-semibold underline">Terms of Service</a>
+                and authorize <span class="font-semibold">Axaipay</span> to process this payment.
+            </label>
+            <div class="space-y-3">
+                <button id="payButton" disabled class="w-full bg-red text-white py-4 rounded-2xl font-bold text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]">
+                    Pay RM 100.00
+                </button>
+                <button class="w-full border-2 border-gray-200 text-gray-700 py-3 rounded-2xl font-semibold transition-all hover:border-[#de1422] hover:text-[#de1422]">
+                    Cancel Payment
+                </button>
+            </div>
+        </div>
+
+        <!-- Security Notice -->
+        <div class="text-center text-sm text-black/80 mt-4">
+            <p class="flex items-center justify-center gap-2">
+                <span></span>
+                © Secured payment processed by:
+                <img src="https://static.wixstatic.com/media/a9eab7_a863f7d76ac44938be8c5bffc1f7f10a~mv2.png/v1/fit/w_2500,h_1330,al_c/a9eab7_a863f7d76ac44938be8c5bffc1f7f10a~mv2.png" class="secure-logo">
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Payment method switching - accordion style
+    const methodItems = document.querySelectorAll('.payment-method-item');
+    const sections = document.querySelectorAll('.payment-section');
+    const allPaymentOptions = document.querySelectorAll('.payment-option-item');
+
+    methodItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const method = item.getAttribute('data-method');
+            const targetSection = item.parentElement.querySelector(`[data-content="${method}"]`);
+
+            // Toggle the clicked section
+            if (targetSection.classList.contains('hidden')) {
+                // Close all other sections
+                methodItems.forEach(i => i.classList.remove('active'));
+                sections.forEach(section => section.classList.add('hidden'));
+
+                // Open the clicked section
+                item.classList.add('active');
+                targetSection.classList.remove('hidden');
+            } else {
+                // Close the clicked section if it's already open
+                item.classList.remove('active');
+                targetSection.classList.add('hidden');
+            }
+        });
+    });
+
+    // Payment option selection (unified across all payment methods)
+    allPaymentOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            if (option.classList.contains('selected')) {
+                // If already selected, unselect it
+                option.classList.remove('selected');
+            } else {
+                // Remove selected class from ALL payment options across all sections
+                allPaymentOptions.forEach(opt => opt.classList.remove('selected'));
+                // Add selected class to clicked option
+                option.classList.add('selected');
+            }
+        });
+    });
+
+    // Input checkers
+    const expiryInput = document.getElementById('expiry');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); // remove non-digits
+
+            if (value.length > 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+
+            e.target.value = value;
+        });
+    }
+
+    const cardNumberInput = document.getElementById('cardNumber');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); // remove non-digits
+            e.target.value = value;
+        });
+    }
+
+    const cvvNumberInput = document.getElementById('cvvNumber');
+    if (cvvNumberInput) {
+        cvvNumberInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); // remove non-digits
+            e.target.value = value;
+        });
+    }
+
+    // Terms checkbox and pay button
+    const termsCheckbox = document.getElementById('terms');
+    const payButton = document.getElementById('payButton');
+
+    if (termsCheckbox && payButton) {
+        termsCheckbox.addEventListener('change', () => {
+            payButton.disabled = !termsCheckbox.checked;
+        });
+    }
+
+    // Countdown timer
+    let timeLeft = 60;
+    const countdownElement = document.querySelector('.text-red .font-bold');
+
+    if (countdownElement) {
+        const timer = setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                countdownElement.textContent = '0:00';
+                return;
+            }
+
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+</script>
+</body>
+</div>
+</div>
+
+<!-- E-Wallet Options -->
+<div data-content="ewallet" class="payment-section hidden">
+    <div class="space-y-2">
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://bloguna.com/wp-content/uploads/2025/06/Logo-ShopeePay-PNG-CDR-SVG-EPS-Kualitas-HD-768x430.png" alt="ShopeePay" class="payment-logo">
+            <span class="font-semibold">ShopeePay</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://assets.grab.com/wp-content/uploads/sites/8/2021/11/26235244/GrabPay_Final_Logo_RGB_green_horizontal-01.png" alt="GrabPay" class="payment-logo">
+            <span class="font-semibold">GrabPay</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://vectorise.net/logo/wp-content/uploads/2019/11/Logo-Boost-e-Wallet.png" alt="Boost" class="payment-logo">
+            <span class="font-semibold">Boost</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Touch_%27n_Go_eWallet_logo.svg/2024px-Touch_%27n_Go_eWallet_logo.svg.png" alt="Touch 'n Go" class="payment-logo">
+            <span class="font-semibold">Touch 'n Go</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://wanna.com.my/wp-content/uploads/2024/09/Logo_1_-_Color.png" alt="WannaPay" class="payment-logo">
+            <span class="font-semibold">WannaPay</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://wavpay.net/live/wp-content/uploads/2023/08/cropped-cropped-Wavpay-new-Logo-9.8.2023-01.png" alt="WavPay" class="payment-logo">
+            <span class="font-semibold">WavPay</span>
+        </div>
+    </div>
+</div>
+
+<!-- Online Banking (Individual) -->
+<div data-content="online-banking-individual" class="payment-section hidden">
+    <div class="space-y-2">
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://logos-world.net/wp-content/uploads/2023/02/Maybank-Logo.png" alt="Maybank" class="payment-logo">
+            <span class="font-semibold">Maybank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://logos-world.net/wp-content/uploads/2023/02/CIMB-Logo.jpg" alt="CIMB" class="payment-logo">
+            <span class="font-semibold">CIMB Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/AFFIN_BANK_Logo_Full_Colour.png" alt="Affin Bank" class="payment-logo">
+            <span class="font-semibold">Affin Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://logos-world.net/wp-content/uploads/2021/02/HSBC-Logo.png" alt="HSBC" class="payment-logo">
+            <span class="font-semibold">HSBC Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3yOtbkTYr1BU8Jqi1l3SrL-33WBSUED-5bw&s" alt="AmBank" class="payment-logo">
+            <span class="font-semibold">AmBank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://images.seeklogo.com/logo-png/1/2/bank-islam-new-logo-png_seeklogo-16284.png" alt="Bank Islam" class="payment-logo">
+            <span class="font-semibold">Bank Islam</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://logos-world.net/wp-content/uploads/2022/03/Citibank-Logo.png" alt="Citibank" class="payment-logo">
+            <span class="font-semibold">Citibank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Deutsche_Bank_logo.svg/2560px-Deutsche_Bank_logo.svg.png" alt="Deutsche Bank" class="payment-logo">
+            <span class="font-semibold">Deutsche Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://cdn.loanstreet.com.my/banks/logos/000/000/031/original/hong-leong-bank-trans.png?1607322067" alt="Hong Leong Bank" class="payment-logo">
+            <span class="font-semibold">Hong Leong</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bank_Rakyat_BM.png/330px-Bank_Rakyat_BM.png" alt="Bank Rakyat" class="payment-logo">
+            <span class="font-semibold">Bank Rakyat</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Logo-ocbc.svg/2560px-Logo-ocbc.svg.png" alt="OCBC Bank" class="payment-logo">
+            <span class="font-semibold">OCBC Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/RHB_Logo.svg/1200px-RHB_Logo.svg.png" alt="RHB Bank" class="payment-logo">
+            <span class="font-semibold">RHB Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Standard_Chartered_%282021%29.svg/1280px-Standard_Chartered_%282021%29.svg.png" alt="Standard Chartered" class="payment-logo">
+            <span class="font-semibold">Standard Chartered</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/UOB_Logo.svg/2560px-UOB_Logo.svg.png" alt="UOB" class="payment-logo">
+            <span class="font-semibold">UOB</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/BSN_Logo.svg/1200px-BSN_Logo.svg.png" alt="BSN" class="payment-logo">
+            <span class="font-semibold">BSN</span>
+        </div>
+    </div>
+</div>
+
+<!-- Online Banking (Company) -->
+<div data-content="online-banking-company" class="payment-section hidden">
+    <div class="space-y-2">
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://logos-world.net/wp-content/uploads/2023/02/Maybank-Logo.png" alt="Maybank" class="payment-logo">
+            <span class="font-semibold">Maybank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://logos-world.net/wp-content/uploads/2023/02/CIMB-Logo.jpg" alt="CIMB" class="payment-logo">
+            <span class="font-semibold">CIMB Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/AFFIN_BANK_Logo_Full_Colour.png" alt="Affin Bank" class="payment-logo">
+            <span class="font-semibold">Affin Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://logos-world.net/wp-content/uploads/2021/02/HSBC-Logo.png" alt="HSBC" class="payment-logo">
+            <span class="font-semibold">HSBC Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3yOtbkTYr1BU8Jqi1l3SrL-33WBSUED-5bw&s" alt="AmBank" class="payment-logo">
+            <span class="font-semibold">AmBank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://images.seeklogo.com/logo-png/1/2/bank-islam-new-logo-png_seeklogo-16284.png" alt="Bank Islam" class="payment-logo">
+            <span class="font-semibold">Bank Islam</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://logos-world.net/wp-content/uploads/2022/03/Citibank-Logo.png" alt="Citibank" class="payment-logo">
+            <span class="font-semibold">Citibank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Deutsche_Bank_logo.svg/2560px-Deutsche_Bank_logo.svg.png" alt="Deutsche Bank" class="payment-logo">
+            <span class="font-semibold">Deutsche Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://cdn.loanstreet.com.my/banks/logos/000/000/031/original/hong-leong-bank-trans.png?1607322067" alt="Hong Leong Bank" class="payment-logo">
+            <span class="font-semibold">Hong Leong</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bank_Rakyat_BM.png/330px-Bank_Rakyat_BM.png" alt="Bank Rakyat" class="payment-logo">
+            <span class="font-semibold">Bank Rakyat</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Logo-ocbc.svg/2560px-Logo-ocbc.svg.png" alt="OCBC Bank" class="payment-logo">
+            <span class="font-semibold">OCBC Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/RHB_Logo.svg/1200px-RHB_Logo.svg.png" alt="RHB Bank" class="payment-logo">
+            <span class="font-semibold">RHB Bank</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Standard_Chartered_%282021%29.svg/1280px-Standard_Chartered_%282021%29.svg.png" alt="Standard Chartered" class="payment-logo">
+            <span class="font-semibold">Standard Chartered</span>
+        </div>
+        <div class="payment-option-item p-3 rounded-xl border border-gray-200 bg-white flex items-center gap-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/UOB_Logo.svg/2560px-UOB_Logo.svg.png" alt="UOB" class="payment-logo">
+            <span class="font-semibold">
