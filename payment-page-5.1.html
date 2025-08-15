@@ -1,3 +1,5 @@
+<!--v5.1-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -383,29 +385,33 @@
 
                     <!-- PayLater Section -->
                     <div id="paylater-section" class="payment-section hidden">
-                        <div class="payment-option-card bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200 cursor-pointer" data-value="paylater">
-                            <div class="text-center">
-                                <div class="text-4xl mb-3">💳</div>
-                                <h3 class="font-semibold text-gray-800 mb-2">PayLater Payment</h3>
-                                <p class="text-sm text-gray-600">Pay later with flexible payment options</p>
-                                <input type="radio" name="payment-option" value="paylater" class="hidden">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">PayLater Payment</label>
+                            <div class="payment-option-card p-4 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="paylater">
+                                <img src="https://secure.riipay.my/images/logos/new/logo-purple-light.png" alt="PayLater" class="payment-logo">
+                                <div class="flex-1">
+                                    <div class="font-semibold">PayLater</div>
+                                    <div class="text-sm text-gray-600">Pay later with flexible payment options</div>
+                                </div>
+                                <input type="radio" name="payment-option" value="paylater" class="text-red focus:ring-red">
                             </div>
                         </div>
                     </div>
 
                     <!-- UnionPay Section -->
                     <div id="unionpay-section" class="payment-section hidden">
-                        <div class="payment-option-card bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 cursor-pointer" data-value="unionpay">
-                            <div class="text-center">
-                                <div class="text-4xl mb-3">🌐</div>
-                                <h3 class="font-semibold text-gray-800 mb-2">UnionPay Payment</h3>
-                                <p class="text-sm text-gray-600">Pay with your UnionPay card</p>
-                                <input type="radio" name="payment-option" value="unionpay" class="hidden">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">UnionPay Payment</label>
+                            <div class="payment-option-card p-4 rounded-xl border border-gray-200 bg-white flex items-center gap-3 cursor-pointer" data-value="unionpay">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/UnionPay_logo.svg/2560px-UnionPay_logo.svg.png" alt="UnionPay" class="payment-logo">
+                                <div class="flex-1">
+                                    <div class="font-semibold">UnionPay</div>
+                                    <div class="text-sm text-gray-600">Pay with your UnionPay card</div>
+                                </div>
+                                <input type="radio" name="payment-option" value="unionpay" class="text-red focus:ring-red">
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
             <!-- Divider -->
             <div class="border-t border-gray-200 my-6"></div>
