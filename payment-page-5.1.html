@@ -416,26 +416,54 @@
             <!-- Divider -->
             <div class="border-t border-gray-200 my-6"></div>
 
-            <!-- Terms & Payment Button Section -->
-            <div class="space-y-6">
-                <div class="flex items-start gap-3">
-                    <input id="terms" type="checkbox" class="mt-1 w-4 h-4 text-red border-gray-300 rounded focus:ring-red focus:ring-offset-0">
-                    <label for="terms" class="text-sm text-gray-700 leading-relaxed">
-                        I agree to the <a href="https://jianhengap.github.io/payment-page/tos-test" class="text-red font-semibold underline hover:no-underline transition-all">Terms of Service</a>
-                        and authorize <span class="font-semibold">Axaipay</span> to process this payment.
-                    </label>
-                </div>
+                    <!-- Terms & Payment Button Section -->
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-3">
+                            <input id="terms" type="checkbox" class="mt-1 w-4 h-4 text-red border-gray-300 rounded focus:ring-red focus:ring-offset-0">
+                            <label for="terms" class="text-sm text-gray-700 leading-relaxed">
+                                I agree to the
+                                <a href="https://jianhengap.github.io/payment-page/tos-test.html"
+                                   class="text-red font-semibold underline hover:no-underline transition-all">
+                                    Terms of Service
+                                </a>
+                                and authorize <span class="font-semibold">Axaipay</span> to process this payment.
+                            </label>
+                        </div>
 
-                <div class="space-y-2">
-                    <button id="payButton" disabled class="w-full bg-red text-white py-3 rounded-2xl font-bold text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100">
-                        Pay RM 100.00
-                    </button>
-                    <button class="w-full border-2 border-gray-200 text-gray-700 py-2 rounded-2xl font-semibold transition-all hover:border-red hover:text-red hover:bg-red/5">
-                        Cancel Payment
-                    </button>
-                </div>
+                        <div class="space-y-2">
+                            <!-- Pay Button as Link -->
+                            <a id="payLink" href="https://jianhengap.github.io/payment-page/payment-successful-test.html"
+                               class="w-full block text-center bg-red text-white py-3 rounded-2xl font-bold text-lg shadow-lg opacity-50 cursor-not-allowed transition-all"
+                               style="pointer-events: none;">
+                                Pay RM 100.00
+                            </a>
 
-                <!-- Security Notice -->
+                            <!-- Cancel Button as Link -->
+                            <a href="https://jianhengap.github.io/payment-page/payment-cancel-test.html"
+                               class="w-full block text-center border-2 border-gray-200 text-gray-700 py-2 rounded-2xl font-semibold transition-all hover:border-red hover:text-red hover:bg-red/5">
+                                Cancel Payment
+                            </a>
+                        </div>
+                    </div>
+
+                    <script>
+                        const termsCheckbox = document.getElementById('terms');
+                        const payLink = document.getElementById('payLink');
+
+                        termsCheckbox.addEventListener('change', function() {
+                            if (this.checked) {
+                                payLink.classList.remove('opacity-50', 'cursor-not-allowed');
+                                payLink.style.pointerEvents = 'auto';
+                            } else {
+                                payLink.classList.add('opacity-50', 'cursor-not-allowed');
+                                payLink.style.pointerEvents = 'none';
+                            }
+                        });
+                    </script>
+
+
+
+                    <!-- Security Notice -->
                 <div class="text-center text-sm text-gray-700 mt-6">
                     <div class="flex items-center justify-center gap-2">
                         <span class="text-xs text-gray-600">© Secured payment processed by:</span>
