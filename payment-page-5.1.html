@@ -413,16 +413,22 @@
                         </div>
                     </div>
 
-            <!-- Divider -->
-            <div class="border-t border-gray-200 my-6"></div>
+                    <!-- Divider -->
+                    <div class="border-t border-gray-200 my-6"></div>
 
+                    <!-- Terms & Payment Button Section -->
                     <!-- Terms & Payment Button Section -->
                     <div class="space-y-6">
                         <div class="flex items-start gap-3">
-                            <input id="terms" type="checkbox" class="mt-1 w-4 h-4 text-red border-gray-300 rounded focus:ring-red focus:ring-offset-0">
+                            <input
+                                    id="terms"
+                                    type="checkbox"
+                                    class="mt-1 w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-600 focus:ring-offset-0"
+                                    onchange="togglePayButton()"
+                            >
                             <label for="terms" class="text-sm text-gray-700 leading-relaxed">
                                 I agree to the
-                                <a href="https://jianhengap.github.io/payment-page/tos-test.html"
+                                <a href="https://jianhengap.github.io/payment-page/tos-test"
                                    class="text-red font-semibold underline hover:no-underline transition-all">
                                     Terms of Service
                                 </a>
@@ -430,168 +436,177 @@
                             </label>
                         </div>
 
-                        <div class="space-y-2">
-                            <!-- Pay Button as Link -->
-                            <a id="payLink" href="https://jianhengap.github.io/payment-page/payment-successful-test.html"
-                               class="w-full block text-center bg-red text-white py-3 rounded-2xl font-bold text-lg shadow-lg opacity-50 cursor-not-allowed transition-all"
-                               style="pointer-events: none;">
+                        <div class="space-y-3">
+                            <button
+                                    id="payButton"
+                                    class="w-full bg-red opacity-50 text-gray-500 py-3 rounded-2xl font-bold text-lg shadow-lg cursor-not-allowed transition-all duration-300"
+                                    disabled
+                                    onclick="processPayment()"
+                            >
                                 Pay RM 100.00
-                            </a>
+                            </button>
 
-                            <!-- Cancel Button as Link -->
-                            <a href="https://jianhengap.github.io/payment-page/payment-cancel-test.html"
-                               class="w-full block text-center border-2 border-gray-200 text-gray-700 py-2 rounded-2xl font-semibold transition-all hover:border-red hover:text-red hover:bg-red/5">
+                            <a href="https://jianhengap.github.io/payment-page/payment-cancel-test"
+                               class="w-full block text-center border-2 border-gray-200 text-gray-700 py-2 rounded-2xl font-semibold transition-all hover:border-red hover:text-red hover:bg-red-50">
                                 Cancel Payment
                             </a>
                         </div>
                     </div>
+                </div>
 
-                    <script>
-                        const termsCheckbox = document.getElementById('terms');
-                        const payLink = document.getElementById('payLink');
-
-                        termsCheckbox.addEventListener('change', function() {
-                            if (this.checked) {
-                                payLink.classList.remove('opacity-50', 'cursor-not-allowed');
-                                payLink.style.pointerEvents = 'auto';
-                            } else {
-                                payLink.classList.add('opacity-50', 'cursor-not-allowed');
-                                payLink.style.pointerEvents = 'none';
-                            }
-                        });
-                    </script>
-
-
-
-                    <!-- Security Notice -->
-                <div class="text-center text-sm text-gray-700 mt-6">
-                    <div class="flex items-center justify-center gap-2">
-                        <span class="text-xs text-gray-600">© Secured payment processed by:</span>
-                        <img src="https://static.wixstatic.com/media/a9eab7_a863f7d76ac44938be8c5bffc1f7f10a~mv2.png/v1/fit/w_2500,h_1330,al_c/a9eab7_a863f7d76ac44938be8c5bffc1f7f10a~mv2.png" alt="Axaipay" class="secure-logo">
+                        <!-- Security Notice -->
+                        <div class="text-center text-sm text-gray-700 mt-6">
+                            <div class="flex items-center justify-center gap-2">
+                                <span class="text-xs text-gray-600">© Secured payment processed by:</span>
+                                <img src="https://static.wixstatic.com/media/a9eab7_a863f7d76ac44938be8c5bffc1f7f10a~mv2.png/v1/fit/w_2500,h_1330,al_c/a9eab7_a863f7d76ac44938be8c5bffc1f7f10a~mv2.png" alt="Axaipay" class="secure-logo">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<script>
-    // Payment method dropdown handling
-    const paymentMethodSelect = document.getElementById('paymentMethod');
-    const paymentSections = document.querySelectorAll('.payment-section');
+        <script>
 
-    paymentMethodSelect.addEventListener('change', (e) => {
-        const selectedMethod = e.target.value;
-        console.log('Selected method:', selectedMethod); // Debug log
+            //buttons
+            function togglePayButton() {
+            const checkbox = document.getElementById('terms');
+            const payButton = document.getElementById('payButton');
 
-        // Hide all payment sections
-        paymentSections.forEach(section => {
-            section.classList.add('hidden');
-        });
-
-        // Clear all selections when changing payment method
-        clearAllSelections();
-
-        // Show selected payment section
-        if (selectedMethod) {
-            const targetSection = document.getElementById(`${selectedMethod}-section`);
-            console.log('Target section:', targetSection); // Debug log
-            if (targetSection) {
-                targetSection.classList.remove('hidden');
-            }
+            if (checkbox.checked) {
+            // Enable the button
+            payButton.disabled = false;
+            payButton.className = "w-full bg-red text-white py-3 rounded-2xl font-bold text-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer";
+        } else {
+            // Disable the button
+            payButton.disabled = true;
+            payButton.className = "w-full bg-red opacity-50 text-gray-500 py-3 rounded-2xl font-bold text-lg shadow-lg cursor-not-allowed transition-all duration-300";
         }
-    });
-
-    // Function to clear all payment option selections
-    function clearAllSelections() {
-        // Remove selected class from all payment cards
-        const allPaymentCards = document.querySelectorAll('.payment-option-card');
-        allPaymentCards.forEach(card => {
-            card.classList.remove('selected');
-        });
-
-        // Uncheck all radio buttons
-        const allRadios = document.querySelectorAll('input[name="payment-option"]');
-        allRadios.forEach(radio => {
-            radio.checked = false;
-        });
-    }
-
-    // Global payment option selection handling
-    document.addEventListener('click', (e) => {
-        const paymentCard = e.target.closest('.payment-option-card');
-        if (paymentCard && paymentCard.hasAttribute('data-value')) {
-            // Clear all previous selections across all payment methods
-            clearAllSelections();
-
-            // Add selected class to clicked card
-            paymentCard.classList.add('selected');
-
-            // Check the radio button in this card
-            const radio = paymentCard.querySelector('input[type="radio"]');
-            if (radio) {
-                radio.checked = true;
-            }
         }
-    });
 
-    // Input formatters
-    const expiryInput = document.getElementById('expiry');
-    if (expiryInput) {
-        expiryInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 2) {
-                value = value.slice(0, 2) + '/' + value.slice(2, 4);
-            }
-            e.target.value = value;
-        });
-    }
+            function processPayment() {
+            const checkbox = document.getElementById('terms');
+            if (checkbox.checked) {
+            window.location.href = 'https://jianhengap.github.io/payment-page/payment-successful-test';
+        }
+        }
 
-    const cardNumberInput = document.getElementById('cardNumber');
-    if (cardNumberInput) {
-        cardNumberInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
-            e.target.value = value;
-        });
-    }
+            // Payment method dropdown handling
+            const paymentMethodSelect = document.getElementById('paymentMethod');
+            const paymentSections = document.querySelectorAll('.payment-section');
 
-    const cvvNumberInput = document.getElementById('cvvNumber');
-    if (cvvNumberInput) {
-        cvvNumberInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            e.target.value = value.slice(0, 3);
-        });
-    }
+            paymentMethodSelect.addEventListener('change', (e) => {
+                const selectedMethod = e.target.value;
+                console.log('Selected method:', selectedMethod); // Debug log
 
-    // Terms checkbox and pay button
-    const termsCheckbox = document.getElementById('terms');
-    const payButton = document.getElementById('payButton');
+                // Hide all payment sections
+                paymentSections.forEach(section => {
+                    section.classList.add('hidden');
+                });
 
-    if (termsCheckbox && payButton) {
-        termsCheckbox.addEventListener('change', () => {
-            payButton.disabled = !termsCheckbox.checked;
-        });
-    }
+                // Clear all selections when changing payment method
+                clearAllSelections();
 
-    // Countdown timer
-    let timeLeft = 60;
-    const countdownElement = document.querySelector('.text-red .font-bold');
+                // Show selected payment section
+                if (selectedMethod) {
+                    const targetSection = document.getElementById(`${selectedMethod}-section`);
+                    console.log('Target section:', targetSection); // Debug log
+                    if (targetSection) {
+                        targetSection.classList.remove('hidden');
+                    }
+                }
+            });
 
-    if (countdownElement) {
-        const timer = setInterval(() => {
-            timeLeft--;
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                countdownElement.textContent = '0:00';
-                return;
+            // Function to clear all payment option selections
+            function clearAllSelections() {
+                // Remove selected class from all payment cards
+                const allPaymentCards = document.querySelectorAll('.payment-option-card');
+                allPaymentCards.forEach(card => {
+                    card.classList.remove('selected');
+                });
+
+                // Uncheck all radio buttons
+                const allRadios = document.querySelectorAll('input[name="payment-option"]');
+                allRadios.forEach(radio => {
+                    radio.checked = false;
+                });
             }
 
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }, 1000);
-    }
-</script>
+            // Global payment option selection handling
+            document.addEventListener('click', (e) => {
+                const paymentCard = e.target.closest('.payment-option-card');
+                if (paymentCard && paymentCard.hasAttribute('data-value')) {
+                    // Clear all previous selections across all payment methods
+                    clearAllSelections();
+
+                    // Add selected class to clicked card
+                    paymentCard.classList.add('selected');
+
+                    // Check the radio button in this card
+                    const radio = paymentCard.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.checked = true;
+                    }
+                }
+            });
+
+            // Input formatters
+            const expiryInput = document.getElementById('expiry');
+            if (expiryInput) {
+                expiryInput.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length > 2) {
+                        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                    }
+                    e.target.value = value;
+                });
+            }
+
+            const cardNumberInput = document.getElementById('cardNumber');
+            if (cardNumberInput) {
+                cardNumberInput.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                    e.target.value = value;
+                });
+            }
+
+            const cvvNumberInput = document.getElementById('cvvNumber');
+            if (cvvNumberInput) {
+                cvvNumberInput.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/\D/g, '');
+                    e.target.value = value.slice(0, 3);
+                });
+            }
+
+            // Terms checkbox and pay button
+            const termsCheckbox = document.getElementById('terms');
+            const payButton = document.getElementById('payButton');
+
+            if (termsCheckbox && payButton) {
+                termsCheckbox.addEventListener('change', () => {
+                    payButton.disabled = !termsCheckbox.checked;
+                });
+            }
+
+            // Countdown timer
+            let timeLeft = 60;
+            const countdownElement = document.querySelector('.text-red .font-bold');
+
+            if (countdownElement) {
+                const timer = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        countdownElement.textContent = '0:00';
+                        return;
+                    }
+
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            }
+        </script>
 </body>
 </html>
