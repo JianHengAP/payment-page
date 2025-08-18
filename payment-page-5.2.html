@@ -1,4 +1,4 @@
-<!--v5.1-->
+<!--v5.2-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -82,6 +82,25 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
+
+        /* Add red border for selected payment options */
+        .payment-option-card.selected {
+            border-color: #de1422 !important;
+            border-width: 2px !important;
+            background-color: #fef2f3 !important;
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 1023px) {
+            .mobile-remove-gap {
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+            }
+
+            .mobile-container-height {
+                height: auto !important;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center">
@@ -90,7 +109,7 @@
     <!-- Main Layout Container -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <!-- Left Container - Header and Order Summary Combined -->
-        <div class="glassmorphism rounded-2xl p-6 h-[700px]">
+        <div class="glassmorphism rounded-2xl p-6 h-[700px] mobile-container-height">
             <!-- Header Section -->
             <div class="text-center mb-8">
                 <!-- Logo-->
@@ -142,18 +161,18 @@
                         <span class="text-gray-600">Item</span>
                         <span class="font-semibold text-gray-800">Sushi Set</span>
                     </div>
-                    <div class="border-t border-gray-200 my-6"></div>
+                    <div class="border-t border-gray-200 my-6 mobile-remove-gap"></div>
                     <div class="grid grid-cols-2 border-b border-gray-100 pb-2">
                         <span class="text-lg font-semibold text-gray-800">Total Amount</span>
                         <span class="text-2xl font-bold text-red">RM100.00</span>
                     </div>
                 </div>
 
-</div>
+            </div>
         </div>
 
         <!-- Right Container - Payment Methods and Terms Combined -->
-        <div class="glassmorphism rounded-2xl p-4 h-[700px] flex flex-col">
+        <div class="glassmorphism rounded-2xl p-4 h-[700px] mobile-container-height flex flex-col">
             <!-- Payment Methods Section -->
             <div class="flex-1">
                 <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -166,15 +185,15 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Payment Method</label>
                         <label for="paymentMethod"></label><select id="paymentMethod" class="w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-red focus:outline-none transition-all dropdown-select bg-white">
-                            <option value="card" selected>Credit / Debit Card</option>
-                            <option value="card-bank-select">Credit / Debit Card (Bank Select)</option>
-                            <option value="online-banking-individual">Online Banking (Individual)</option>
-                            <option value="online-banking-company">Online Banking (Company)</option>
-                            <option value="ewallet">E-Wallet</option>
-                            <option value="duitnow">DuitNowQR</option>
-                            <option value="paylater">PayLater</option>
-                            <option value="unionpay">UnionPay</option>
-                        </select>
+                        <option value="card" selected>Credit / Debit Card</option>
+                        <option value="card-bank-select">Credit / Debit Card (Bank Select)</option>
+                        <option value="online-banking-individual">Online Banking (Individual)</option>
+                        <option value="online-banking-company">Online Banking (Company)</option>
+                        <option value="ewallet">E-Wallet</option>
+                        <option value="duitnow">DuitNowQR</option>
+                        <option value="paylater">PayLater</option>
+                        <option value="unionpay">UnionPay</option>
+                    </select>
                     </div>
 
                     <!-- Credit/Debit Card Form -->
