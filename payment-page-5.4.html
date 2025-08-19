@@ -80,12 +80,15 @@
       font-size: inherit !important;
       line-height: inherit !important;
       color: inherit !important;
-      padding: 0.75rem 2.5rem 0.75rem 1rem !important;
+      padding: 0.75rem 3rem 0.75rem 1rem !important;
       width: 100% !important;
       box-sizing: border-box !important;
       margin: 0 !important;
       vertical-align: baseline !important;
       display: block !important;
+      position: relative !important;
+      z-index: 1 !important;
+      transform: translateZ(0) !important;
     }
 
     .dropdown-select:focus {
@@ -93,7 +96,10 @@
       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23de1422' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
       outline: none !important;
       box-shadow: 0 0 0 3px rgba(222, 20, 34, 0.1) !important;
+      z-index: 2 !important;
     }
+
+    /* Additional container styling to prevent clipping */
 
     /* Force override any inherited styles */
     select.dropdown-select {
@@ -114,31 +120,54 @@
       box-sizing: border-box !important;
     }
 
+    /* Fixed border rendering for payment option cards */
     .payment-option-card {
       transition: all 0.2s ease-in-out;
       border: 2px solid #e5e7eb;
+      /* Force hardware acceleration and fix sub-pixel rendering */
+      transform: translate3d(0, 0, 0);
+      -webkit-transform: translate3d(0, 0, 0);
+      will-change: transform, border-color, background-color;
+      /* Ensure proper box-sizing */
+      box-sizing: border-box;
+      /* Add slight outline to prevent border disappearing */
+      outline: 1px solid transparent;
+      outline-offset: -1px;
+      /* Force repaint to fix border issues */
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      /* Pixel-perfect rendering */
+      image-rendering: crisp-edges;
     }
 
     .payment-option-card:hover {
       border-color: #de1422;
       background-color: #fef2f3;
-      transform: translateY(-1px);
+      transform: translate3d(0, -1px, 0);
+      -webkit-transform: translate3d(0, -1px, 0);
+      /* Ensure border stays visible on hover */
+      outline: 1px solid #de1422;
+      outline-offset: -1px;
     }
 
-    .payment-option-card.selected {
-      border-color: #de1422 !important;
-      background-color: #fef2f3 !important;
+    /* Additional fix for border rendering at different zoom levels */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
+      .payment-option-card {
+        /* Webkit specific fixes */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+      }
+    }
+
+    @supports (-moz-appearance: none) {
+      .payment-option-card {
+        border-style: solid;
+        border-width: 2px;
+      }
     }
 
     @media (max-width: 1023px) {
-      .mobile-remove-gap {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-      }
 
-      .mobile-container-height {
-        height: auto !important;
-      }
     }
   </style>
 </head>
@@ -169,7 +198,7 @@
                     </span>
         </div>
 
-        <!-- Countdown with animated ring -->
+        <!-- Countdown-->
         <div class="flex items-center justify-center gap-2">
                     <span class="text-sm text-red font-semibold">
                         Payment expires in <span class="font-bold text-lg">1:00</span>
@@ -192,7 +221,7 @@
           <div class="space-y-3">
             <div>
               <span class="text-gray-600 block">Order ID</span>
-              <span class="text-xl font-semibold text-gray-800">#71374483</span>
+              <span class="text-xl font-semibold text-gray-800">71374483</span>
             </div>
             <div>
               <span class="text-gray-600 block">Item</span>
@@ -201,10 +230,10 @@
           </div>
 
           <!-- Right Column -->
-          <div class="space-y-3 md:text-right">
+          <div class="space-y-3 md:text-left">
             <div>
               <span class="text-gray-600 block">Transaction ID</span>
-              <span class="text-xl font-semibold text-gray-800">#202508087854598</span>
+              <span class="text-xl font-semibold text-gray-800">202508087854598</span>
             </div>
             <div>
               <span class="text-gray-600 block">Total Amount</span>
@@ -216,7 +245,7 @@
       </div>
     </div>
 
-    <!-- Bottom Container - Payment Methods and Terms Combined -->
+    <!-- Bottom Container, Payment Methods and Terms Combined -->
     <div class="glassmorphism rounded-2xl p-6 flex flex-col">
       <!-- Payment Methods Section -->
       <div class="flex-1">
@@ -229,16 +258,18 @@
           <!-- Main Payment Method Dropdown -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-1">Payment Method</label>
-            <label for="paymentMethod"></label><select id="paymentMethod" class="dropdown-select">
-            <option value="card" selected>Credit / Debit Card</option>
-            <option value="card-bank-select">Credit / Debit Card (Bank Select)</option>
-            <option value="online-banking-individual">Online Banking (Individual)</option>
-            <option value="online-banking-company">Online Banking (Company)</option>
-            <option value="ewallet">E-Wallet</option>
-            <option value="duitnow">DuitNowQR</option>
-            <option value="paylater">PayLater</option>
-            <option value="unionpay">UnionPay</option>
-          </select>
+            <div class="relative">
+              <label for="paymentMethod"></label><select id="paymentMethod" class="dropdown-select">
+                <option value="card" selected>Credit / Debit Card</option>
+                <option value="card-bank-select">Credit / Debit Card (Bank Select)</option>
+                <option value="online-banking-individual">Online Banking (Individual)</option>
+                <option value="online-banking-company">Online Banking (Company)</option>
+                <option value="ewallet">E-Wallet</option>
+                <option value="duitnow">DuitNowQR</option>
+                <option value="paylater">PayLater</option>
+                <option value="unionpay">UnionPay</option>
+              </select>
+            </div>
           </div>
 
           <!-- Credit/Debit Card Form -->
@@ -492,12 +523,6 @@
                       onchange="togglePayButton()"
               >
               <label for="terms" id="termsLabel" class="text-sm text-gray-700 leading-relaxed">
-                I agree to the
-                <a href="https://jianhengap.github.io/payment-page/tos-test"
-                   class="text-red font-semibold underline hover:no-underline transition-all">
-                  Terms of Service
-                </a>
-                and authorize <span class="font-semibold">Axaipay</span> to process this credit card payment securely.
               </label>
             </div>
 
@@ -534,14 +559,14 @@
 <script>
   // Terms of Service text variations based on payment method
   const termsTexts = {
-    'card': 'I agree to the <a href="https://jianhengap.github.io/payment-page/tos-test" class="text-red font-semibold underline hover:no-underline transition-all">Terms of Service</a> and authorize <span class="font-semibold">Axaipay</span> to process this credit card payment securely.',
-    'card-bank-select': 'I agree to the <a href="https://jianhengap.github.io/payment-page/tos-test" class="text-red font-semibold underline hover:no-underline transition-all">Terms of Service</a> and authorize <span class="font-semibold">Axaipay</span> to process this card payment through the selected bank.',
-    'online-banking-individual': 'I agree to the <a href="https://jianhengap.github.io/payment-page/tos-test" class="text-red font-semibold underline hover:no-underline transition-all">Terms of Service</a> and authorize <span class="font-semibold">Axaipay</span> to initiate this online banking transaction on my behalf.',
-    'online-banking-company': 'I agree to the <a href="https://jianhengap.github.io/payment-page/tos-test" class="text-red font-semibold underline hover:no-underline transition-all">Terms of Service</a> and confirm that I have corporate authorization to process this company banking transaction via <span class="font-semibold">Axaipay</span>.',
-    'ewallet': 'I agree to the <a href="https://jianhengap.github.io/payment-page/tos-test" class="text-red font-semibold underline hover:no-underline transition-all">Terms of Service</a> and authorize <span class="font-semibold">Axaipay</span> to process this e-wallet payment and share necessary transaction details with the selected e-wallet provider.',
-    'duitnow': 'I agree to the <a href="https://jianhengap.github.io/payment-page/tos-test" class="text-red font-semibold underline hover:no-underline transition-all">Terms of Service</a> and authorize <span class="font-semibold">Axaipay</span> to process this DuitNowQR payment through PayNet Malaysia.',
-    'paylater': 'I agree to the <a href="https://jianhengap.github.io/payment-page/tos-test" class="text-red font-semibold underline hover:no-underline transition-all">Terms of Service</a>, PayLater terms and conditions, and authorize <span class="font-semibold">Axaipay</span> to process this deferred payment arrangement.',
-    'unionpay': 'I agree to the <a href="https://jianhengap.github.io/payment-page/tos-test" class="text-red font-semibold underline hover:no-underline transition-all">Terms of Service</a> and authorize <span class="font-semibold">Axaipay</span> to process this UnionPay card payment securely.'
+    'card': 'I authorise Axaipay to charge the above amount from credit/debit card and agree to <a href="https://jianhengap.github.io/payment-page/pp-test" class="text-red font-semibold no-underline hover:underline transition-all">Axaipay\'s Privacy Statement</a>.',
+    'card-bank-select': 'I authorise Axaipay to charge the above amount from credit/debit card and agree to <a href="https://jianhengap.github.io/payment-page/pp-test" class="text-red font-semibold no-underline hover:underline transition-all">Axaipay\'s Privacy Statement</a>.',
+    'online-banking-individual': 'I authorise Axaipay to charge the above amount and agree to <a href="https://jianhengap.github.io/payment-page/tou-test" class="text-red font-semibold no-underline hover:underline transition-all">FPX\'s Terms of Use</a>.',
+    'online-banking-company': 'I authorise Axaipay to charge the above amount and agree to <a href="https://jianhengap.github.io/payment-page/tou-test" class="text-red font-semibold no-underline hover:underline transition-all">FPX\'s Terms of Use</a>.',
+    'ewallet': 'I authorise Axaipay to charge the above amount from bank/e-wallet account and accept <a href="https://jianhengap.github.io/payment-page/pp-test" class="text-red font-semibold no-underline hover:underline transition-all">Axaipay\'s Privacy Statement</a>.',
+    'duitnow': 'I authorise Axaipay to charge the above amount and agree to <a href="https://jianhengap.github.io/payment-page/pp-test" class="text-red font-semibold no-underline hover:underline transition-all">Axaipay\'s Privacy Statement</a>.',
+    'paylater': 'I authorise Axaipay to charge the above amount from bank/e-wallet account and accept <a href="https://jianhengap.github.io/payment-page/pp-test" class="text-red font-semibold no-underline hover:underline transition-all">Axaipay\'s Privacy Statement</a>.',
+    'unionpay': 'I authorise Axaipay to charge the above amount and agree to <a href="https://jianhengap.github.io/payment-page/pp-test" class="text-red font-semibold no-underline hover:underline transition-all">Axaipay\'s Privacy Statement</a>.'
   };
 
   //buttons
